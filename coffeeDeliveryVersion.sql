@@ -1,4 +1,8 @@
+-- Sets foreign keys on so foreign key restrictions are enforced
 PRAGMA foreign_keys = ON;
+-- Group members:
+-- Markus Risa Vesetrud
+-- Emma Erikson Våge
 CREATE TABLE User (
     Email nvarchar(50),
     Password nvarchar(50),
@@ -6,7 +10,7 @@ CREATE TABLE User (
     PRIMARY KEY (Email)
 );
 CREATE TABLE CoffeeTastes (
-    TasteID int,
+    TasteID INTEGER PRIMARY KEY,
     Email nvarchar(50) NOT NULL,
     CoffeeName nvarchar(50) NOT NULL,
     RoasteryID int NOT NULL,
@@ -14,72 +18,69 @@ CREATE TABLE CoffeeTastes (
         Points >= 0
         AND Points <= 10
     ),
-    Notes text,
+    Notes nvarchar(1000),
     Date date,
-    PRIMARY KEY (TasteID),
     FOREIGN KEY (Email) REFERENCES User(Email),
     FOREIGN KEY (CoffeeName, RoasteryID) REFERENCES RoastedCoffee(CoffeeName, RoasteryID)
 );
 CREATE TABLE Roastery (
-    RoasteryID int,
-    Name nvarchar(50),
-    PRIMARY KEY (RoasteryID)
+    RoasteryID INTEGER PRIMARY KEY,
+    Name nvarchar(50)
 );
 CREATE TABLE RoastedCoffee (
     CoffeeName nvarchar(50),
     RoasteryID int,
     BatchID int NOT NULL,
-    RoastDegree nvarchar(30) CHECK (
-        RoastDegree = 'light'
-        OR RoastDegree = 'medium'
-        OR RoastDegree = 'dark'
+    -- The RoastDegree is stored as 1, 2, or 3
+    -- 1 corresponds to "light"
+    -- 2 corresponds to "medium"
+    -- 3 corresponds to "dark"
+    RoastDegree tinyint CHECK (
+        RoastDegree >= 1
+        AND RoastDegree <= 3
     ),
     RoastDate date,
-    Description text,
+    Description nvarchar(1000),
     PricePerKilo int,
     PRIMARY KEY (CoffeeName, RoasteryID),
     FOREIGN KEY (RoasteryID) REFERENCES Roastery(RoasteryID) ON DELETE CASCADE,
     FOREIGN KEY (BatchID) REFERENCES CoffeeBatch(BatchID)
 );
 CREATE TABLE CoffeeBatch (
-    BatchID int,
+    BatchID INTEGER PRIMARY KEY,
     FarmID int NOT NULL,
     MethodName nvarchar(50) NOT NULL,
     HarvestYear int,
     PricePaidToFarm int,
-    PRIMARY KEY (BatchID),
     FOREIGN KEY (FarmID) REFERENCES Farm(FarmID),
     FOREIGN KEY (MethodName) REFERENCES ProcessingMethod(MethodName)
 );
 CREATE TABLE ProcessingMethod (
     MethodName nvarchar(50),
-    Description text,
+    Description nvarchar(1000),
     PRIMARY KEY (MethodName)
 );
 CREATE TABLE CoffeeBean (
-    BeanID int,
+    BeanID INTEGER PRIMARY KEY,
     Name nvarchar(50),
     Species nvarchar(20) CHECK (
         Species = "coffea"
         OR Species = "arabica"
         OR Species = "coffea robusta"
         OR Species = "coffea liberica"
-    ),
-    PRIMARY KEY (BeanID)
+    )
 );
 CREATE TABLE Farm (
-    FarmID int,
+    FarmID INTEGER PRIMARY KEY,
     LocationID int NOT NULL,
     Name nvarchar(50),
     MetersAboveSea int,
-    PRIMARY KEY (FarmID),
     FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
 );
 CREATE TABLE Location (
-    LocationID int,
+    LocationID INTEGER PRIMARY KEY,
     Country nvarchar(50),
-    Region nvarchar(50),
-    PRIMARY KEY (LocationID)
+    Region nvarchar(50)
 );
 CREATE TABLE Contains (
     BatchID int,

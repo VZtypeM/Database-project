@@ -1,4 +1,4 @@
--- Sets foreign keys on so that they are enforced
+-- Sets foreign keys on so foreign key restrictions are enforced
 PRAGMA foreign_keys = ON;
 -- Drops tables to reset the database
 DROP TABLE IF EXISTS CoffeeTastes;
@@ -14,6 +14,9 @@ DROP TABLE IF EXISTS Farm;
 DROP TABLE IF EXISTS Location;
 --@Block
 -- Create tables
+-- Group members:
+-- Markus Risa Vesetrud
+-- Emma Erikson Våge
 CREATE TABLE User (
     Email nvarchar(50),
     Password nvarchar(50),
@@ -42,10 +45,13 @@ CREATE TABLE RoastedCoffee (
     CoffeeName nvarchar(50),
     RoasteryID int,
     BatchID int NOT NULL,
-    RoastDegree nvarchar(30) CHECK (
-        RoastDegree = 'light'
-        OR RoastDegree = 'medium'
-        OR RoastDegree = 'dark'
+    -- The RoastDegree is stored as 1, 2, or 3
+    -- 1 corresponds to "light"
+    -- 2 corresponds to "medium"
+    -- 3 corresponds to "dark"
+    RoastDegree tinyint CHECK (
+        RoastDegree >= 1
+        AND RoastDegree <= 3
     ),
     RoastDate date,
     Description nvarchar(1000),
@@ -142,7 +148,7 @@ VALUES (
         "Vinterkaffe 2022",
         1,
         1,
-        "light",
+        1,
         "2022-01-22",
         "A tasty and complex coffee for polar nights",
         600
