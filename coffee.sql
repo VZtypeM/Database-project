@@ -21,7 +21,7 @@ CREATE TABLE User (
     PRIMARY KEY (Email)
 );
 CREATE TABLE CoffeeTastes (
-    TasteID int,
+    TasteID INTEGER PRIMARY KEY,
     Email nvarchar(50) NOT NULL,
     CoffeeName nvarchar(50) NOT NULL,
     RoasteryID int NOT NULL,
@@ -31,14 +31,12 @@ CREATE TABLE CoffeeTastes (
     ),
     Notes text,
     Date date,
-    PRIMARY KEY (TasteID),
     FOREIGN KEY (Email) REFERENCES User(Email),
     FOREIGN KEY (CoffeeName, RoasteryID) REFERENCES RoastedCoffee(CoffeeName, RoasteryID)
 );
 CREATE TABLE Roastery (
-    RoasteryID int,
-    Name nvarchar(50),
-    PRIMARY KEY (RoasteryID)
+    RoasteryID INTEGER PRIMARY KEY,
+    Name nvarchar(50)
 );
 CREATE TABLE RoastedCoffee (
     CoffeeName nvarchar(50),
@@ -57,12 +55,11 @@ CREATE TABLE RoastedCoffee (
     FOREIGN KEY (BatchID) REFERENCES CoffeeBatch(BatchID)
 );
 CREATE TABLE CoffeeBatch (
-    BatchID int,
+    BatchID INTEGER PRIMARY KEY,
     FarmID int NOT NULL,
     MethodName nvarchar(50) NOT NULL,
     HarvestYear int,
     PricePaidToFarm int,
-    PRIMARY KEY (BatchID),
     FOREIGN KEY (FarmID) REFERENCES Farm(FarmID),
     FOREIGN KEY (MethodName) REFERENCES ProcessingMethod(MethodName)
 );
@@ -72,29 +69,26 @@ CREATE TABLE ProcessingMethod (
     PRIMARY KEY (MethodName)
 );
 CREATE TABLE CoffeeBean (
-    BeanID int,
+    BeanID INTEGER PRIMARY KEY,
     Name nvarchar(50),
     Species nvarchar(20) CHECK (
         Species = "coffea"
         OR Species = "arabica"
         OR Species = "coffea robusta"
         OR Species = "coffea liberica"
-    ),
-    PRIMARY KEY (BeanID)
+    )
 );
 CREATE TABLE Farm (
-    FarmID int,
+    FarmID INTEGER PRIMARY KEY,
     LocationID int NOT NULL,
     Name nvarchar(50),
     MetersAboveSea int,
-    PRIMARY KEY (FarmID),
     FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
 );
 CREATE TABLE Location (
-    LocationID int,
+    LocationID INTEGER PRIMARY KEY,
     Country nvarchar(50),
-    Region nvarchar(50),
-    PRIMARY KEY (LocationID)
+    Region nvarchar(50)
 );
 CREATE TABLE Contains (
     BatchID int,
@@ -118,24 +112,23 @@ VALUES (
         "Password123",
         "Ola Nordman"
     );
-INSERT INTO Roastery (RoasteryID, Name)
-VALUES (1, "Trondheim brewery Jacobsen & Svart");
-INSERT INTO Location (LocationID, Country, Region)
-VALUES (1, "El Salvador", "Santa Ana");
-INSERT INTO Farm (FarmID, LocationID, Name, MetersAboveSea)
-VALUES (1, 1, "Nombre de Dios", 1500);
+INSERT INTO Roastery (Name)
+VALUES ("Trondheim brewery Jacobsen & Svart");
+INSERT INTO Location (Country, Region)
+VALUES ("El Salvador", "Santa Ana");
+INSERT INTO Farm (LocationID, Name, MetersAboveSea)
+VALUES (1, "Nombre de Dios", 1500);
 INSERT INTO ProcessingMethod (MethodName, Description)
 VALUES ("Natrual", "Do nothing basically");
-INSERT INTO CoffeeBean (BeanID, Name, Species)
-VALUES (1, "Bourbon", "arabica");
+INSERT INTO CoffeeBean (Name, Species)
+VALUES ("Bourbon", "arabica");
 INSERT INTO CoffeeBatch (
-        BatchID,
         FarmID,
         MethodName,
         HarvestYear,
         PricePaidToFarm
     )
-VALUES (1, 1, "Natrual", 2021, 8);
+VALUES (1, "Natrual", 2021, 8);
 INSERT INTO RoastedCoffee (
         CoffeeName,
         RoasteryID,
@@ -150,12 +143,11 @@ VALUES (
         1,
         1,
         "light",
-        "20.01.2022",
+        "2022-01-22",
         "A tasty and complex coffee for polar nights",
         600
     );
 INSERT INTO CoffeeTastes (
-        TasteID,
         Email,
         CoffeeName,
         RoasteryID,
@@ -164,13 +156,12 @@ INSERT INTO CoffeeTastes (
         Date
     )
 VALUES (
-        1,
         "ola.nordman@gmail.com",
         "Vinterkaffe 2022",
         1,
         10,
         "Wow an odyssey for the taste buds: citrus peel, milk chocolate, apricot!",
-        "14.03.2022"
+        "2022-03-14"
     );
 INSERT INTO Contains (BatchID, BeanID)
 VALUES (1, 1);
