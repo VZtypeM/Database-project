@@ -13,13 +13,15 @@ CREATE TABLE CoffeeTastes (
     TasteID INTEGER PRIMARY KEY,
     Email nvarchar(50) NOT NULL,
     CoffeeName nvarchar(50) NOT NULL,
+    -- We would like to add a UNIQUE CONSTRAINT on CoffeeName and Roastery.name
+    -- But those are in different tables, so we will do it on the application level instead
     RoasteryID int NOT NULL,
     Points tinyint CHECK (
         Points >= 0
         AND Points <= 10
     ),
     Notes nvarchar(1000),
-    Date date,
+    Date SMALLDATETIME,
     FOREIGN KEY (Email) REFERENCES User(Email),
     FOREIGN KEY (CoffeeName, RoasteryID) REFERENCES RoastedCoffee(CoffeeName, RoasteryID)
 );
@@ -39,7 +41,7 @@ CREATE TABLE RoastedCoffee (
         RoastDegree >= 1
         AND RoastDegree <= 3
     ),
-    RoastDate date,
+    RoastDate DATE,
     Description nvarchar(1000),
     PricePerKilo int,
     PRIMARY KEY (CoffeeName, RoasteryID),
