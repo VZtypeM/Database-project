@@ -33,7 +33,7 @@ CREATE TABLE CoffeeTastes (
         AND Points <= 10
     ),
     Notes nvarchar(1000),
-    Date date,
+    Date SMALLDATETIME,
     FOREIGN KEY (Email) REFERENCES User(Email),
     FOREIGN KEY (CoffeeName, RoasteryID) REFERENCES RoastedCoffee(CoffeeName, RoasteryID)
 );
@@ -53,7 +53,7 @@ CREATE TABLE RoastedCoffee (
         RoastDegree >= 1
         AND RoastDegree <= 3
     ),
-    RoastDate date,
+    RoastDate DATE,
     Description nvarchar(1000),
     PricePerKilo int,
     PRIMARY KEY (CoffeeName, RoasteryID),
@@ -167,7 +167,7 @@ VALUES (
         1,
         10,
         "Wow an odyssey for the taste buds: citrus peel, milk chocolate, apricot!",
-        "2022-03-14"
+        "2022-03-14 12:00"
     );
 INSERT INTO Contains (BatchID, BeanID)
 VALUES (1, 1);
