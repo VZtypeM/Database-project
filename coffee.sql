@@ -36,8 +36,8 @@ CREATE TABLE CoffeeTastes (
     ),
     Notes nvarchar(1000),
     Date SMALLDATETIME,
-    FOREIGN KEY (Email) REFERENCES User(Email),
-    FOREIGN KEY (CoffeeName, RoasteryID) REFERENCES RoastedCoffee(CoffeeName, RoasteryID)
+    FOREIGN KEY (Email) REFERENCES User(Email) ON UPDATE CASCADE,
+    FOREIGN KEY (CoffeeName, RoasteryID) REFERENCES RoastedCoffee(CoffeeName, RoasteryID) ON UPDATE CASCADE
 );
 CREATE TABLE Roastery (
     RoasteryID INTEGER PRIMARY KEY,
@@ -69,7 +69,7 @@ CREATE TABLE CoffeeBatch (
     HarvestYear int,
     PricePaidToFarm int,
     FOREIGN KEY (FarmID) REFERENCES Farm(FarmID),
-    FOREIGN KEY (MethodName) REFERENCES ProcessingMethod(MethodName)
+    FOREIGN KEY (MethodName) REFERENCES ProcessingMethod(MethodName) ON UPDATE CASCADE
 );
 CREATE TABLE ProcessingMethod (
     MethodName nvarchar(50),
