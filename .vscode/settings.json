@@ -1,0 +1,11 @@
+{
+  "sqltools.connections": [
+    {
+        "previewLimit": 50,
+        "driver": "SQLite",
+        "name": "coffeeDB",
+        "database": "test.db"
+    }
+],
+  "sqltools.useNodeRuntime": true
+}
