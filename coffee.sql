@@ -29,7 +29,7 @@ CREATE TABLE CoffeeTastes (
         Points >= 0
         AND Points <= 10
     ),
-    Notes text,
+    Notes nvarchar(1000),
     Date date,
     FOREIGN KEY (Email) REFERENCES User(Email),
     FOREIGN KEY (CoffeeName, RoasteryID) REFERENCES RoastedCoffee(CoffeeName, RoasteryID)
@@ -48,7 +48,7 @@ CREATE TABLE RoastedCoffee (
         OR RoastDegree = 'dark'
     ),
     RoastDate date,
-    Description text,
+    Description nvarchar(1000),
     PricePerKilo int,
     PRIMARY KEY (CoffeeName, RoasteryID),
     FOREIGN KEY (RoasteryID) REFERENCES Roastery(RoasteryID) ON DELETE CASCADE,
@@ -65,7 +65,7 @@ CREATE TABLE CoffeeBatch (
 );
 CREATE TABLE ProcessingMethod (
     MethodName nvarchar(50),
-    Description text,
+    Description nvarchar(1000),
     PRIMARY KEY (MethodName)
 );
 CREATE TABLE CoffeeBean (
