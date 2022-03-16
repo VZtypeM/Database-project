@@ -15,15 +15,15 @@ DROP TABLE IF EXISTS Location;
 --@Block
 -- Create tables
 CREATE TABLE User (
-    Email nvarchar(255) NOT NULL,
-    Password nvarchar(255),
-    FullName nvarchar(255),
+    Email nvarchar(50) NOT NULL,
+    Password nvarchar(50),
+    FullName nvarchar(50),
     PRIMARY KEY (Email)
 );
 CREATE TABLE CoffeeTastes (
     TasteID int NOT NULL,
-    Email nvarchar(255) NOT NULL,
-    CoffeeName nvarchar(30) NOT NULL,
+    Email nvarchar(50) NOT NULL,
+    CoffeeName nvarchar(50) NOT NULL,
     RoasteryID int NOT NULL,
     Points tinyint CHECK (
         Points >= 0
@@ -37,11 +37,11 @@ CREATE TABLE CoffeeTastes (
 );
 CREATE TABLE Roastery (
     RoasteryID int NOT NULL,
-    Name nvarchar(30),
+    Name nvarchar(50),
     PRIMARY KEY (RoasteryID)
 );
 CREATE TABLE RoastedCoffee (
-    CoffeeName nvarchar(30) NOT NULL,
+    CoffeeName nvarchar(50) NOT NULL,
     RoasteryID int NOT NULL,
     BatchID int NOT NULL,
     RoastDegree nvarchar(30) CHECK (
@@ -59,7 +59,7 @@ CREATE TABLE RoastedCoffee (
 CREATE TABLE CoffeeBatch (
     BatchID int NOT NULL,
     FarmID int NOT NULL,
-    MethodName nvarchar(255) NOT NULL,
+    MethodName nvarchar(50) NOT NULL,
     HarvestYear int,
     PricePaidToFarm int,
     PRIMARY KEY (BatchID),
@@ -67,14 +67,14 @@ CREATE TABLE CoffeeBatch (
     FOREIGN KEY (MethodName) REFERENCES ProcessingMethod(MethodName)
 );
 CREATE TABLE ProcessingMethod (
-    MethodName nvarchar(255) NOT NULL,
+    MethodName nvarchar(50) NOT NULL,
     Description text,
     PRIMARY KEY (MethodName)
 );
 CREATE TABLE CoffeeBean (
     BeanID int NOT NULL,
-    Name nvarchar(30),
-    Species nvarchar(30) CHECK (
+    Name nvarchar(50),
+    Species nvarchar(20) CHECK (
         Species = "coffea"
         OR Species = "arabica"
         OR Species = "coffea robusta"
@@ -85,15 +85,15 @@ CREATE TABLE CoffeeBean (
 CREATE TABLE Farm (
     FarmID int NOT NULL,
     LocationID int NOT NULL,
-    Name nvarchar(255),
+    Name nvarchar(50),
     MetersAboveSea int,
     PRIMARY KEY (FarmID),
     FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
 );
 CREATE TABLE Location (
     LocationID int NOT NULL,
-    Country nvarchar(255),
-    Region nvarchar(255),
+    Country nvarchar(50),
+    Region nvarchar(50),
     PRIMARY KEY (LocationID)
 );
 CREATE TABLE Contains (
