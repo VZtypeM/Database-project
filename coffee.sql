@@ -79,11 +79,14 @@ CREATE TABLE ProcessingMethod (
 CREATE TABLE CoffeeBean (
     BeanID INTEGER PRIMARY KEY,
     Name nvarchar(50),
-    Species nvarchar(20) CHECK (
-        Species = "coffea"
-        OR Species = "arabica"
-        OR Species = "coffea robusta"
-        OR Species = "coffea liberica"
+    -- The Species is stored as 1, 2, 3, or 4 to save space
+    -- 1 corresponds to "coffea"
+    -- 2 corresponds to "arabica"
+    -- 3 corresponds to "coffea robusta"
+    -- 4 corresponds to "coffea liberica"
+    Species tinyint CHECK (
+        Species >= 1
+        AND Species <= 4
     )
 );
 CREATE TABLE Farm (
@@ -129,7 +132,7 @@ VALUES (1, "Nombre de Dios", 1500);
 INSERT INTO ProcessingMethod (MethodName, Description)
 VALUES ("Natrual", "Do nothing basically");
 INSERT INTO CoffeeBean (Name, Species)
-VALUES ("Bourbon", "arabica");
+VALUES ("Bourbon", 1);
 INSERT INTO CoffeeBatch (
         FarmID,
         MethodName,
