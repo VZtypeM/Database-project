@@ -115,7 +115,7 @@ CREATE TABLE Grows (
     FOREIGN KEY (FarmID) REFERENCES Farm(FarmID),
     FOREIGN KEY (BeanID) REFERENCES CoffeeBean(BeanID)
 );
---@Block
+--off@Block
 -- Insert at least one row in every table
 INSERT INTO User (Email, Password, FullName)
 VALUES (
@@ -131,6 +131,8 @@ INSERT INTO Farm (LocationID, Name, MetersAboveSea)
 VALUES (1, "Nombre de Dios", 1500);
 INSERT INTO ProcessingMethod (MethodName, Description)
 VALUES ("Natrual", "Do nothing basically");
+INSERT INTO ProcessingMethod (MethodName, Description)
+VALUES ("Washed", "Wash all the beans");
 INSERT INTO CoffeeBean (Name, Species)
 VALUES ("Bourbon", 1);
 INSERT INTO CoffeeBatch (
@@ -178,7 +180,7 @@ INSERT INTO Contains (BatchID, BeanID)
 VALUES (1, 1);
 INSERT INTO Grows (FarmID, BeanID)
 VALUES (1, 1);
---@Block
+--off@Block
 -- Display every value
 SELECT *
 FROM User;
