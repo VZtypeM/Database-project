@@ -2,9 +2,13 @@ import pick
 import sqlite3
 import add_coffee_taste
 
+database_name = "test.db"
+user_email = None
 
-def log_in(database_name: str, user_email: str):
-    # The user_email argument is the user that is allready logged in
+
+def log_in():
+    global user_email
+    # The user_email global variable is the user that is allready logged in
     email = input("Enter your email: ")
     password = input("Enter your password: ")
 
@@ -20,26 +24,27 @@ def log_in(database_name: str, user_email: str):
     if len(result) == 0:
         print("No user with a matching email and password")
         # Keep the previous user logged in
-        return user_email
-
-    # Return the email of the new user
-    return result[0][0]
-
-
-def log_out(database_name: str, user_email: str):
-    return None
-
-
-def add_coffee_taste_handler(database_name: str, user_email: str):
-    if user_email is None:
-        print("You are not logged in, please log in first")
         return
-    coffee_name = input("Enter the name of the coffee you tasted")
+
+    # Set the email of the new user
+    user_email = result[0][0]
+
+
+def log_out():
+    global user_email
+    user_email = None
+
+
+def add_coffee_taste_handler():
+    if user_email is None:
+        print("You are not logged in, please log in first: ")
+        return
+    coffee_name = input("Enter the name of the coffee you tasted: ")
     roastery_name = input(
-        "Enter the name of the roastery where your coffee was roasted"
+        "Enter the name of the roastery where your coffee was roasted: "
     )
-    points = int(input("Enter the number of points you would give the coffee (0-10)"))
-    notes = input("Write down any notes about the coffee")
+    points = int(input("Enter the number of points you would give the coffee (0-10): "))
+    notes = input("Write down any notes about the coffee: ")
 
     add_coffee_taste.add_coffee_taste(
         database_name=database_name,
@@ -52,40 +57,40 @@ def add_coffee_taste_handler(database_name: str, user_email: str):
 
 
 def main():
-    database_name = "test.db"
-    user_email = None
     options = [
         {
             "label": "Log in",
             "confirmation_message": "Logging in",
             "handler": log_in,
-            "returns_email": True,
         },
         {
             "label": "Log out",
             "confirmation_message": "Logging out",
             "handler": log_out,
-            "returns_email": True,
         },
         {
             "label": "Add coffee taste",
             "confirmation_message": "Adding a coffee taste",
             "handler": add_coffee_taste_handler,
-            "returns_email": False,
         },
     ]
 
     title = "What do you want to do?"
-    selected = pick.pick(
-        options, title, options_map_func=lambda option: option.get("label")
-    )
+    while True:
+        selected = pick.pick(
+            options, title, options_map_func=lambda option: option.get("label")
+        )
 
-    print(selected[0]["confirmation_message"])
-    # Run the handler function you selected
-    if selected[0]["returns_email"]:
-        user_email = selected[0]["handler"](database_name, user_email)
-    else:
-        selected[0]["handler"](database_name, user_email)
+        print(selected[0]["confirmation_message"])
+
+        # Run the handler function you selected
+        selected[0]["handler"]()
+
+        print(user_email)
+
+        feedback = input('Press enter to continue or "q" to quit: ').lower()
+        if feedback == "q":
+            return
 
 
 if __name__ == "__main__":
