@@ -1,76 +1,50 @@
 import pick
-import sqlite3
-from datetime import date
-
-database_name = "test.db"
+import add_coffee_taste
 
 
-def find_roastery_id_from_names(coffee_name: str, roastery_name: str) -> str | None:
-    connection = sqlite3.connect(database_name)
-    cursor = connection.cursor()
+def log_in(database_name: str):
+    print("logging in")
 
-    cursor.execute(
-        """
-        SELECT DISTINCT RoasteryID
-        FROM Roastery JOIN CoffeeTastes USING (RoasteryID)
-        WHERE CoffeeName = ? AND Roastery.name = ?;
-        """,
-        (coffee_name, roastery_name),
+
+def log_out(database_name: str):
+    pass
+
+
+def add_coffee_taste_handler(database_name: str):
+    add_coffee_taste.add_coffee_taste(
+        database_name=database_name,
+        email="ola.nordman@gmail.com",
+        coffee_name="Vinterkaffe 2022",
+        roastery_name="Trondheim brewery Jacobsen & Svart",
+        points=4,
+        notes="Splendid",
     )
-    result = cursor.fetchall()
-    connection.close()
-
-    if len(result) > 1:
-        print("Roastery.name and CoffeeName are not unique in the database!")
-        return None
-    if len(result) == 0:
-        print("No matching Roastery.name and CoffeeName in the database!")
-        return None
-
-    # Return roastery id
-    return result[0][0]
-
-
-def add_coffee_taste(
-    email: str, coffee_name: str, roastery_name: str, points: int, notes: str
-) -> None:
-    date_today = date.today()
-    roastery_id = find_roastery_id_from_names(coffee_name, roastery_name)
-
-    connection = sqlite3.connect(database_name)
-    cursor = connection.cursor()
-
-    try:
-        # Remember to turn on foreign keys
-        cursor.execute("PRAGMA foreign_keys = ON;")
-        cursor.execute(
-            """
-            INSERT INTO CoffeeTastes (Email, CoffeeName, RoasteryID, Points, Notes, Date)
-            VALUES (?, ?, ?, ?, ?, ?);""",
-            (email, coffee_name, roastery_id, points, notes, date_today),
-        )
-
-        connection.commit()
-        connection.close()
-    except sqlite3.IntegrityError as error:
-        print(error)
-        print("Database not modified")
-        connection.close()
 
 
 def main():
-    options = ["add coffee taste", "log in", "search for cofffee"]
+    database_name = "test.db"
+    options = [
+        {"label": "log in", "handler": log_in},
+        {"label": "log out", "handler": log_out},
+        {"label": "add coffee taste", "handler": add_coffee_taste_handler},
+    ]
+
     title = "What do you want to do?"
-    selected = pick.pick(options, title)
-    print(selected)
-    if selected[0] == "add coffee taste":
-        add_coffee_taste(
-            "ola.nordman@gmail.com",
-            "Vinterkaffe 2022",
-            "Trondheim brewery Jacobsen & Svart",
-            7,
-            "Splendid",
-        )
+    selected = pick.pick(
+        options, title, options_map_func=lambda option: option.get("label")
+    )
+
+    # Run the handler function you selected
+    selected[0]["handler"](database_name)
+
+    # if selected[0] == "add coffee taste":
+    #     add_coffee_taste(
+    #         "ola.nordman@gmail.com",
+    #         "Vinterkaffe 2022",
+    #         "Trondheim brewery Jacobsen & Svart",
+    #         7,
+    #         "Splendid",
+    #     )
 
 
 if __name__ == "__main__":
