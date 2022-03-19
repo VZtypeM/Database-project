@@ -62,6 +62,8 @@ def print_users_with_coffee_tastes():
     cursor = connection.cursor()
     year = datetime.now().year
     year = f"{year}-01-01"
+
+    print("\nFullName: CoffesDrunk")
     for row in cursor.execute(
         """
         SELECT DISTINCT FullName, COUNT(*) as CoffeesDrunk
@@ -72,7 +74,7 @@ def print_users_with_coffee_tastes():
         """,
         (year,),
     ):
-        print(row)
+        print(row[0] + ": " + str(row[1]))
 
     connection.close()
 
