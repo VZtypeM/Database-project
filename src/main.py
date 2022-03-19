@@ -8,8 +8,7 @@ user_email = None
 
 
 def log_in():
-    # The user_email global variable is the user that is allready logged in
-    global user_email
+    # The user_email global variable is the user that is already logged in
     email = input("Enter your email: ")
     password = input("Enter your password: ")
 
@@ -32,10 +31,10 @@ def log_in():
 
 
 def log_out():
-    global user_email
-    user_email = None
+    pass
 
 
+# User story 1
 def add_coffee_taste_handler():
     if user_email is None:
         print("You are not logged in, please log in first: ")
@@ -44,6 +43,7 @@ def add_coffee_taste_handler():
     roastery_name = input(
         "Enter the name of the roastery where your coffee was roasted: "
     )
+
     points = int(input("Enter the number of points you would give the coffee (0-10): "))
     notes = input("Write down any notes about the coffee: ")
 
@@ -57,6 +57,7 @@ def add_coffee_taste_handler():
     )
 
 
+# User story 2
 def print_users_with_coffee_tastes():
     connection = sqlite3.connect(database_name)
     cursor = connection.cursor()
@@ -75,6 +76,47 @@ def print_users_with_coffee_tastes():
         (year,),
     ):
         print(row[0] + ": " + str(row[1]))
+
+    connection.close()
+
+
+# User story 3
+def show_coffee_value():
+    connection = sqlite3.connect(database_name)
+    cursor = connection.cursor()
+
+    print("\nRoasteryName, CoffeeName: Price=PricePerKilo, Value=Value")
+    for row in cursor.execute(
+        """
+        SELECT Roastery.name as RoasteryName, CoffeeName, PricePerKilo, AVG(Points)/PricePerKilo as Value
+        FROM Roastery JOIN RoastedCoffee USING (RoasteryID) JOIN CoffeeTastes USING (RoasteryID, CoffeeName)
+        GROUP BY RoasteryID, CoffeeName
+        ORDER BY Value DESC;
+        """
+    ):
+        print(f"{row[0]}, {row[1]}: Price={row[2]}, Value={row[3]}")
+
+    connection.close()
+
+
+# User story 4
+def search_description():
+    search_term = input("Enter the term you want to search after: ")
+    search_term = "%" + search_term + "%"
+
+    connection = sqlite3.connect(database_name)
+    cursor = connection.cursor()
+
+    print("\nRoasteryName, CoffeeName")
+    for row in cursor.execute(
+        """
+        SELECT DISTINCT Roastery.name as RoasteryName, CoffeeName
+        FROM Roastery JOIN RoastedCoffee USING (RoasteryID) JOIN CoffeeTastes USING (RoasteryID, CoffeeName)
+        WHERE Notes LIKE ? OR Description LIKE ?;
+        """,
+        (search_term, search_term),
+    ):
+        print(f"{row[0]}, {row[1]}")
 
     connection.close()
 
@@ -101,6 +143,16 @@ def main():
             "confirmation_message": "Printing the number of coffes each user has drunk",
             "handler": print_users_with_coffee_tastes,
         },
+        {
+            "label": "Print the value and price of each coffee",
+            "confirmation_message": "Printing coffee values",
+            "handler": show_coffee_value,
+        },
+        {
+            "label": "Search coffee descriptions",
+            "confirmation_message": "Searching coffee descriptions",
+            "handler": search_description,
+        },
     ]
 
     title = "What do you want to do?"
@@ -113,8 +165,6 @@ def main():
 
         # Run the handler function you selected
         selected[0]["handler"]()
-
-        print(user_email)
 
         feedback = input('Press enter to continue or "q" to quit: ').lower()
         if feedback == "q":
