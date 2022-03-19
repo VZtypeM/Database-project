@@ -1,14 +1,15 @@
 import pick
 import sqlite3
 import add_coffee_taste
+from datetime import datetime
 
 database_name = "test.db"
 user_email = None
 
 
 def log_in():
-    global user_email
     # The user_email global variable is the user that is allready logged in
+    global user_email
     email = input("Enter your email: ")
     password = input("Enter your password: ")
 
@@ -56,6 +57,26 @@ def add_coffee_taste_handler():
     )
 
 
+def print_users_with_coffee_tastes():
+    connection = sqlite3.connect(database_name)
+    cursor = connection.cursor()
+    year = datetime.now().year
+    year = f"{year}-01-01"
+    for row in cursor.execute(
+        """
+        SELECT DISTINCT FullName, COUNT(*) as CoffeesDrunk
+        FROM CoffeeTastes JOIN Roastery USING (RoasteryID) JOIN User USING (email)
+        WHERE date >= ?
+        GROUP BY email
+        ORDER BY CoffeesDrunk DESC;
+        """,
+        (year,),
+    ):
+        print(row)
+
+    connection.close()
+
+
 def main():
     options = [
         {
@@ -72,6 +93,11 @@ def main():
             "label": "Add coffee taste",
             "confirmation_message": "Adding a coffee taste",
             "handler": add_coffee_taste_handler,
+        },
+        {
+            "label": "Print users who have tasted the most coffee",
+            "confirmation_message": "Printing the number of coffes each user has drunk",
+            "handler": print_users_with_coffee_tastes,
         },
     ]
 
