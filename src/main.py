@@ -136,59 +136,6 @@ def show_coffee_value(database_name: str):
     connection.close()
 
 
-# User story 4
-def search_description(database_name: str):
-    # Lets the user search the description of coffees by users or roasteries according to user story 4
-    # This is a special case of the more generic search option we have implemented
-    search_term = "%" + input("Enter the term you want to search after: ") + "%"
-
-    connection = sqlite3.connect(database_name)
-    cursor = connection.cursor()
-
-    print("\nRoasteryName, CoffeeName")
-    for row in cursor.execute(
-        """
-        SELECT DISTINCT Roastery.name as RoasteryName, CoffeeName
-        FROM Roastery JOIN RoastedCoffee USING (RoasteryID) LEFT OUTER JOIN CoffeeTastes USING (RoasteryID, CoffeeName)
-        WHERE Notes LIKE ? OR Description LIKE ?;
-        """,
-        (search_term, search_term),
-    ):
-        print(f"{row[0]}, {row[1]}")
-
-    connection.close()
-
-
-# User story 5
-def search_country_and_method(database_name: str):
-    search_country = "%" + input("Enter the country you want to search after: ") + "%"
-    search_method = (
-        "%" + input("Enter the processing method you want to search after: ") + "%"
-    )
-
-    connection = sqlite3.connect(database_name)
-    cursor = connection.cursor()
-
-    print("\nRoasteryName, CoffeeName")
-    for row in cursor.execute(
-        """
-        SELECT DISTINCT Roastery.name as RoasteryName, CoffeeName
-        FROM Roastery 
-        JOIN RoastedCoffee USING (RoasteryID) 
-        JOIN CoffeeBatch USING (BatchID) 
-        JOIN Farm USING (FarmID) 
-        JOIN Location USING (LocationID)
-        WHERE MethodName LIKE ? OR Country LIKE ?;
-        """,
-        (search_method, search_country),
-    ):
-        print(f"{row[0]}, {row[1]}")
-
-    connection.close()
-
-
-# TODO: Add more values to db
-
 # generic input sanitizer
 def choice_parser(prompt, type_=None, min_=None, max_=None, range_=None):
     if min_ is not None and max_ is not None and max_ < min_:
@@ -223,45 +170,47 @@ def choice_parser(prompt, type_=None, min_=None, max_=None, range_=None):
 def main():
     database_name = "test.db"
 
+    # This object describes the different options the user has to search or change the database
+    # The "handler" key references one of the functions above
     options = [
         {
             "label": "Log in",
-            "confirmation_message": "Logging in",
+            "confirmation_message": "Logging in\n",
             "handler": log_in,
         },
         {
             "label": "Log out",
-            "confirmation_message": "Logging out",
+            "confirmation_message": "Logging out\n",
             "handler": log_out,
         },
         {
             "label": "Add coffee taste",
-            "confirmation_message": "Add a coffee taste selected",
+            "confirmation_message": "Add a coffee taste selected\n",
             "handler": add_coffee_taste_handler,
         },
         {
             "label": "Print users who have tasted the most coffee",
-            "confirmation_message": "Printing the number of coffes each user has drunk",
+            "confirmation_message": "Printing the number of coffes each user has drunk\n",
             "handler": print_users_with_coffee_tastes,
         },
         {
             "label": "Print the value and price of each coffee",
-            "confirmation_message": "Printing coffee values",
+            "confirmation_message": "Printing coffee values\n",
             "handler": show_coffee_value,
         },
+        # {
+        #     "label": "Search coffees based on descriptions",
+        #     "confirmation_message": "Coffee description search selected\n",
+        #     "handler": search_description,
+        # },
+        # {
+        #     "label": "Search coffees based on farm country and method",
+        #     "confirmation_message": "Country and method search selected\n",
+        #     "handler": search_country_and_method,
+        # },
         {
-            "label": "Search coffee descriptions",
-            "confirmation_message": "Coffee description search selected",
-            "handler": search_description,
-        },
-        {
-            "label": "Search farm country and method",
-            "confirmation_message": "Country and method search selected",
-            "handler": search_country_and_method,
-        },
-        {
-            "label": "Search the database for coffees",
-            "confirmation_message": "General search selected\n",
+            "label": "Search after coffees",
+            "confirmation_message": "Coffee search selected\n",
             "handler": general_search,
         },
     ]
@@ -275,7 +224,7 @@ def main():
 
         print(selected["confirmation_message"])
 
-        # Run the handler function you selected
+        # Run the handler function that was selected
         selected["handler"](database_name)
 
         feedback = input('\nPress enter to continue or "q" and enter to quit: ').lower()

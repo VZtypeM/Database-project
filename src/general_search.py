@@ -78,6 +78,7 @@ def handle_region_search(database_name: str):
         return ("Region LIKE ?", search_term)
 
 
+# User story 4 and 4
 def general_search(database_name: str):
     # The start of the sql query and the terms you search after
     input_terms = []
@@ -171,18 +172,21 @@ def general_search(database_name: str):
 
     sql_query += ")" * condition_count + ";"
 
+    # Printing what is done
     print("Executing the following query: ")
     print(sql_query)
     if len(input_terms) > 0:
         print("\nWith the follwing input")
         print(input_terms)
 
+    # Fetching the data
     connection = sqlite3.connect(database_name)
     cursor = connection.cursor()
     cursor.execute(sql_query, tuple(input_terms))
     result = cursor.fetchall()
     connection.close()
 
+    # Printing the result
     if len(result) == 0:
         print("\nThis query returned 0 coffees")
         return
