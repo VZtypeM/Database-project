@@ -23,7 +23,7 @@ def find_roastery_id_from_names(
         print("Roastery.name and CoffeeName are not unique in the database!")
         return None
     if len(result) == 0:
-        print("No matching Roastery.name and CoffeeName in the database!")
+        print("No matching Roastery.name and CoffeeName in the database")
         return None
 
     # Return roastery id
@@ -40,6 +40,9 @@ def add_coffee_taste(
 ) -> None:
     date_today = date.today()
     roastery_id = find_roastery_id_from_names(database_name, coffee_name, roastery_name)
+    if roastery_id is None:
+        print("Database not modified")
+        return
 
     connection = sqlite3.connect(database_name)
     cursor = connection.cursor()
@@ -55,8 +58,9 @@ def add_coffee_taste(
         )
 
         connection.commit()
-        connection.close()
+        print("Database successfully modified")
     except sqlite3.IntegrityError as error:
         print(error)
         print("Database not modified")
+    finally:
         connection.close()

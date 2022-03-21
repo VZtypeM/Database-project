@@ -16,7 +16,7 @@ DROP TABLE IF EXISTS Location;
 -- Create tables
 -- Group members:
 -- Markus Risa Vesetrud
--- Emma Erikson Våge
+-- Emma Eriksson Våge
 CREATE TABLE User (
     Email nvarchar(50),
     Password nvarchar(50),
