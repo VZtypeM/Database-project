@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\marku\Code-Projects\NTNU\Database\storage\Database-project"
+VIRTUAL_ENV="C:\Users\marku\Code-Projects\NTNU\Database\Database-project"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

@@ -1,6 +1,6 @@
-from cgitb import reset
 from pick import pick
 import sqlite3
+from tabulate import tabulate
 
 # These handle functions are called when the user wants to search a spesific category
 # They all return a part of an SQL query and maybe the input the user entered that must
