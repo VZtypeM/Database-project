@@ -202,4 +202,4 @@ def general_search(database_name: str):
 
 
 if __name__ == "__main__":
-    general_search("coffee.db")
+    general_search("src/coffee.db")
