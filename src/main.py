@@ -101,8 +101,10 @@ def print_users_with_coffee_tastes(database_name: str):
 
     print("\nFullName: CoffeesDrunk")
     for row in cursor.execute(
+        # The COUNT(DISTINCT RoasteryID || CoffeeName) counts the number of rows having
+        # RoasteryID concatinated with CoffeeName unique.
         """
-        SELECT DISTINCT FullName, COUNT(*) as CoffeesDrunk
+        SELECT FullName, COUNT(DISTINCT RoasteryID || CoffeeName) as CoffeesDrunk
         FROM CoffeeTastes JOIN Roastery USING (RoasteryID) JOIN User USING (email)
         WHERE date >= ?
         GROUP BY email

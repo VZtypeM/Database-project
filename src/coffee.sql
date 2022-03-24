@@ -1,3 +1,5 @@
+-- This file can be run to create and insert values into our database, resetting it
+--
 -- Sets foreign keys on so foreign key restrictions are enforced
 PRAGMA foreign_keys = ON;
 -- Drops tables to reset the database
@@ -11,7 +13,8 @@ DROP TABLE IF EXISTS ProcessingMethod;
 DROP TABLE IF EXISTS Grows;
 DROP TABLE IF EXISTS CoffeeBean;
 DROP TABLE IF EXISTS Farm;
-DROP TABLE IF EXISTS Location;
+DROP TABLE IF EXISTS Region;
+DROP TABLE IF EXISTS Country;
 --@Block
 -- Create tables
 -- Group members:
@@ -91,16 +94,15 @@ CREATE TABLE CoffeeBean (
 );
 CREATE TABLE Farm (
     FarmID INTEGER PRIMARY KEY,
-    LocationID int NOT NULL,
+    Country nvarchar(50) NOT NULL,
+    Region nvarchar(50) NOT NULL,
     Name nvarchar(50),
     MetersAboveSea int,
-    FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
+    FOREIGN KEY (Region) REFERENCES Region(Region),
+    FOREIGN KEY (Country) REFERENCES Country(Country)
 );
-CREATE TABLE Location (
-    LocationID INTEGER PRIMARY KEY,
-    Country nvarchar(50),
-    Region nvarchar(50)
-);
+CREATE TABLE Country (Country nvarchar(50) PRIMARY KEY);
+CREATE TABLE Region (Region nvarchar(50) PRIMARY KEY);
 CREATE TABLE Contains (
     BatchID int,
     BeanID int,
@@ -125,10 +127,17 @@ VALUES (
     );
 INSERT INTO Roastery (Name)
 VALUES ("Trondheim brewery Jacobsen & Svart");
-INSERT INTO Location (Country, Region)
-VALUES ("El Salvador", "Santa Ana");
-INSERT INTO Farm (LocationID, Name, MetersAboveSea)
-VALUES (1, "Nombre de Dios", 1500);
+INSERT INTO Country (Country)
+VALUES ("El Salvador");
+INSERT INTO Region (Region)
+VALUES ("Santa Ana");
+INSERT INTO Farm (Country, Region, Name, MetersAboveSea)
+VALUES (
+        "El Salvador",
+        "Santa Ana",
+        "Nombre de Dios",
+        1500
+    );
 INSERT INTO ProcessingMethod (MethodName, Description)
 VALUES ("Natrual", "Do nothing basically");
 INSERT INTO ProcessingMethod (MethodName, Description)
@@ -180,14 +189,16 @@ INSERT INTO Contains (BatchID, BeanID)
 VALUES (1, 1);
 INSERT INTO Grows (FarmID, BeanID)
 VALUES (1, 1);
---off@Block
+--@Block
 -- Display every value
 SELECT *
 FROM User;
 SELECT *
 FROM Roastery;
 SELECT *
-FROM Location;
+FROM Country;
+SELECT *
+FROM Region;
 SELECT *
 FROM Farm;
 SELECT *

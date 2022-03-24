@@ -11,7 +11,7 @@ def find_roastery_id_from_names(
     cursor.execute(
         """
         SELECT RoasteryID
-        FROM Roastery JOIN CoffeeTastes USING (RoasteryID)
+        FROM Roastery JOIN RoastedCoffee USING (RoasteryID)
         WHERE CoffeeName = ? AND Roastery.name = ?;
         """,
         (coffee_name, roastery_name),

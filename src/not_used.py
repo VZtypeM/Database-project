@@ -45,7 +45,6 @@ def search_country_and_method(database_name: str):
         JOIN RoastedCoffee USING (RoasteryID) 
         JOIN CoffeeBatch USING (BatchID) 
         JOIN Farm USING (FarmID) 
-        JOIN Location USING (LocationID)
         WHERE MethodName LIKE ? OR Country LIKE ?;
         """,
         (search_method, search_country),

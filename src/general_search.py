@@ -36,7 +36,7 @@ def handle_country_search(database_name: str):
     connection = sqlite3.connect(database_name)
     cursor = connection.cursor()
 
-    cursor.execute("SELECT DISTINCT Country FROM Location;")
+    cursor.execute("SELECT Country FROM Country;")
     names = cursor.fetchall()
     connection.close()
 
@@ -59,7 +59,7 @@ def handle_region_search(database_name: str):
     connection = sqlite3.connect(database_name)
     cursor = connection.cursor()
 
-    cursor.execute("SELECT DISTINCT Region FROM Location;")
+    cursor.execute("SELECT Region FROM Region;")
     names = cursor.fetchall()
     connection.close()
 
@@ -89,7 +89,6 @@ def general_search(database_name: str):
     LEFT OUTER JOIN CoffeeTastes USING (RoasteryID, CoffeeName) 
     JOIN CoffeeBatch USING (BatchID) 
     JOIN Farm USING (FarmID) 
-    JOIN Location USING (LocationID)
     WHERE """
     # As you can see all relevant tables are allready joined,
     # so this program could be further optimized by only joining
