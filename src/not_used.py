@@ -1,3 +1,7 @@
+# This file contains the unsued spesific searches mathcing user story 4 and 5
+import sqlite3
+
+
 # User story 4
 def search_description(database_name: str):
     # Lets the user search the description of coffees by users or roasteries according to user story 4
