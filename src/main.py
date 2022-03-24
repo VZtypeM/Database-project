@@ -172,6 +172,17 @@ def choice_parser(prompt, type_=None, min_=None, max_=None, range_=None):
 def main():
     database_name = "coffee.db"
 
+    # Uncomment the following lines to reset the database by running the coffee.sql file
+
+    # with open('src/coffee.sql', 'r') as sql_file:
+    #     sql_script = sql_file.read()
+    
+    # connection = sqlite3.connect(database_name)
+    # cursor = connection.cursor()
+    # cursor.executescript(sql_script)
+    # connection.commit()
+    # connection.close()
+
     # This object describes the different options the user has to search or change the database
     # The "handler" key references one of the functions above
     options = [
