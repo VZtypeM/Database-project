@@ -19,6 +19,7 @@ def find_roastery_id_from_names(
     result = cursor.fetchall()
     connection.close()
 
+    # TODO: Update this to take location into account, not just fail on duplicate roastery names
     if len(result) > 1:
         print("Roastery.name and CoffeeName are not unique in the database!")
         return None

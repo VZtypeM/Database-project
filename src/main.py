@@ -1,4 +1,5 @@
 from pick import pick
+from tabulate import tabulate
 import sqlite3
 from add_coffee_taste import add_coffee_taste
 from datetime import datetime
@@ -99,8 +100,7 @@ def print_users_with_coffee_tastes(database_name: str):
     year = datetime.now().year
     year = f"{year}-01-01"
 
-    print("\nFullName: CoffeesDrunk")
-    for row in cursor.execute(
+    cursor.execute(
         # The COUNT(DISTINCT RoasteryID || CoffeeName) counts the number of rows having
         # RoasteryID concatinated with CoffeeName unique.
         """
@@ -111,8 +111,9 @@ def print_users_with_coffee_tastes(database_name: str):
         ORDER BY CoffeesDrunk DESC;
         """,
         (year,),
-    ):
-        print(row[0] + ": " + str(row[1]))
+    )
+    
+    print(tabulate(cursor.fetchall(), headers=["User full name", "Different coffees drunk"], tablefmt='fancy_grid'))
 
     connection.close()
 
@@ -124,16 +125,17 @@ def show_coffee_value(database_name: str):
     connection = sqlite3.connect(database_name)
     cursor = connection.cursor()
 
-    print("\nRoasteryName, CoffeeName: Price=PricePerKilo, Value=Value")
-    for row in cursor.execute(
+    cursor.execute(
+        # Note that we are sorting on something different than what is shown
         """
-        SELECT Roastery.name as RoasteryName, CoffeeName, PricePerKilo, AVG(Points)/PricePerKilo as Value
+        SELECT Roastery.name as RoasteryName, CoffeeName, PricePerKilo, AVG(Points) as AverageScore
         FROM Roastery JOIN RoastedCoffee USING (RoasteryID) JOIN CoffeeTastes USING (RoasteryID, CoffeeName)
         GROUP BY RoasteryID, CoffeeName
-        ORDER BY Value DESC;
+        ORDER BY AVG(Points)/PricePerKilo DESC;
         """
-    ):
-        print(f"{row[0]}, {row[1]}: Price={row[2]}, Value={row[3]}")
+    )
+
+    print(tabulate(cursor.fetchall(), headers=["Roastery name", "Coffee name", "Price per kilo", "Average user rating"], tablefmt='fancy_grid'))
 
     connection.close()
 
@@ -208,7 +210,7 @@ def main():
         },
         {
             "label": "Print the value and price of each coffee",
-            "confirmation_message": "Printing coffee values\n",
+            "confirmation_message": "Printing coffee values sorted on average_rating/price\n",
             "handler": show_coffee_value,
         },
         # {

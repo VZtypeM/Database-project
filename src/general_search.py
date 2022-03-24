@@ -190,11 +190,15 @@ def general_search(database_name: str):
         print("\nThis query returned 0 coffees")
         return
 
-    print(
-        '\nThis query gave the following output on the form "RoasteryName, CoffeeName":\n'
-    )
-    for row in result:
-        print(f"{row[0]}, {row[1]}")
+    print("\nThe result of this query was: ")
+    print(tabulate(result, headers=["Roastery name", "Coffee name"], tablefmt='fancy_grid'))
+    # print(
+    #     '\nThis query gave the following output on the form "RoasteryName, CoffeeName":\n'
+    # )
+    # for row in result:
+    #     print(f"{row[0]}, {row[1]}")
+    
+
 
 
 if __name__ == "__main__":
