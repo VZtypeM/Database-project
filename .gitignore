@@ -1,2 +1,2 @@
-./test.db
 src/__pycache__
+.vscode

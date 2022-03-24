@@ -198,4 +198,4 @@ def general_search(database_name: str):
 
 
 if __name__ == "__main__":
-    general_search("test.db")
+    general_search("coffee.db")

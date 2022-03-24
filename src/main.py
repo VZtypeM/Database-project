@@ -170,7 +170,7 @@ def choice_parser(prompt, type_=None, min_=None, max_=None, range_=None):
 
 
 def main():
-    database_name = "test.db"
+    database_name = "coffee.db"
 
     # This object describes the different options the user has to search or change the database
     # The "handler" key references one of the functions above
