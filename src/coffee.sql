@@ -353,6 +353,14 @@ VALUES (
         "",
         "2022-03-14 12:00"
     ),
+    (
+        "maria.olsen@gmail.com",
+        "Plain Bourbon",
+        6,
+        4,
+        "The taste is quite boring and standard",
+        "2022-03-14 12:00"
+    ),
     -- Note how the following taste is registered in 2019 and therefore should not be taken into account by user story 2
     (
         "maria.olsen@gmail.com",
