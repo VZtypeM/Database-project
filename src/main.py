@@ -113,7 +113,7 @@ def print_users_with_coffee_tastes(database_name: str):
         (year,),
     )
     
-    print(tabulate(cursor.fetchall(), headers=["User full name", "Different coffees drunk"], tablefmt='fancy_grid'))
+    print(tabulate(cursor.fetchall(), headers=["User full name", "Different coffees drunk"], tablefmt='github'))
 
     connection.close()
 
@@ -135,7 +135,7 @@ def show_coffee_value(database_name: str):
         """
     )
 
-    print(tabulate(cursor.fetchall(), headers=["Roastery name", "Coffee name", "Price per kilo", "Average user rating"], tablefmt='fancy_grid'))
+    print(tabulate(cursor.fetchall(), headers=["Roastery name", "Coffee name", "Price per kilo", "Average user rating"], tablefmt='github'))
 
     connection.close()
 
@@ -205,7 +205,7 @@ def main():
         },
         {
             "label": "Print users who have tasted the most coffee",
-            "confirmation_message": "Printing the number of coffes each user has drunk\n",
+            "confirmation_message": "Printing the number of different coffes each user has drunk so far this year\n",
             "handler": print_users_with_coffee_tastes,
         },
         {

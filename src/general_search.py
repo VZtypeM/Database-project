@@ -47,12 +47,12 @@ def handle_country_search(database_name: str):
     if len(names) < 10:
         print("Selecting country ...")
         selection, _ = pick(names, "Which country do you want to search after?")
-        return (f'Country == "{selection}"', None)
+        return (f'Farm.Country == "{selection}"', None)
     else:
         search_prompt = "Enter the name of the country you want to search after: "
         search_term = "%" + input(search_prompt) + "%"
 
-        return ("Country LIKE ?", search_term)
+        return ("Farm.Country LIKE ?", search_term)
 
 
 def handle_region_search(database_name: str):
@@ -70,20 +70,24 @@ def handle_region_search(database_name: str):
     if len(names) < 10:
         print("Selecting region ...")
         selection, _ = pick(names, "Which region do you want to search after?")
-        return (f'Region == "{selection}"', None)
+        return (f'Farm.Region == "{selection}"', None)
     else:
         search_prompt = "Enter the name of the region you want to search after: "
         search_term = "%" + input(search_prompt) + "%"
 
-        return ("Region LIKE ?", search_term)
+        return ("Farm.Region LIKE ?", search_term)
 
 
 # User story 4 and 4
 def general_search(database_name: str):
     # The start of the sql query and the terms you search after
     input_terms = []
+    # Note that the query also includes the roasteryID. This id is not displayed, 
+    # but including it here makes sure that coffees from roasteries with identical names are still shown
+    # Since we allow coffees to have the same roatery and coffee name, it would also be beneficial to show the 
+    # location or the id of the roastery to fully identify it.
     sql_query = """
-    SELECT DISTINCT Roastery.name as RoasteryName, CoffeeName
+    SELECT DISTINCT Roastery.name as RoasteryName, CoffeeName, RoasteryID
     FROM Roastery 
     JOIN RoastedCoffee USING (RoasteryID) 
     LEFT OUTER JOIN CoffeeTastes USING (RoasteryID, CoffeeName) 
@@ -184,6 +188,10 @@ def general_search(database_name: str):
     cursor.execute(sql_query, tuple(input_terms))
     result = cursor.fetchall()
     connection.close()
+    
+    # Remove the roastery ID at the end
+    for i in range(len(result)):
+        result[i] = result[i][:2]
 
     # Printing the result
     if len(result) == 0:
@@ -191,14 +199,7 @@ def general_search(database_name: str):
         return
 
     print("\nThe result of this query was: ")
-    print(tabulate(result, headers=["Roastery name", "Coffee name"], tablefmt='fancy_grid'))
-    # print(
-    #     '\nThis query gave the following output on the form "RoasteryName, CoffeeName":\n'
-    # )
-    # for row in result:
-    #     print(f"{row[0]}, {row[1]}")
-    
-
+    print(tabulate(result, headers=["Roastery name", "Coffee name"], tablefmt='github'))
 
 
 if __name__ == "__main__":
