@@ -1,5 +1,6 @@
 import sqlite3
 from datetime import date
+from pick import pick
 
 
 def find_roastery_id_from_names(
@@ -17,12 +18,34 @@ def find_roastery_id_from_names(
         (coffee_name, roastery_name),
     )
     result = cursor.fetchall()
-    connection.close()
 
-    # TODO: Update this to take location into account, not just fail on duplicate roastery names
     if len(result) > 1:
-        print("Roastery.name and CoffeeName are not unique in the database!")
-        return None
+        cursor.execute(
+            "SELECT RoasteryID, Name, Country, Region FROM Roastery WHERE Roastery.Name = ?",
+            (roastery_name,),
+        )
+
+        result = cursor.fetchall()
+        connection.close()
+
+        roastery_options = []
+        for row in result:
+            roastery_options.append(
+                {
+                    "label": f'Roastery "{row[1]}" in {row[3]}, {row[2]}',
+                    "roasteryID": row[0],
+                }
+            )
+
+        title = """There are several coffees in the database with the given roastery and coffee name.
+Please specify which roastery you mean, by country and region."""
+        selected, _ = pick(
+            roastery_options, title, options_map_func=lambda option: option.get("label")
+        )
+        print(selected["roasteryID"])
+        return selected["roasteryID"]
+
+    connection.close()
     if len(result) == 0:
         print("No matching Roastery.name and CoffeeName in the database")
         return None
@@ -35,15 +58,11 @@ def add_coffee_taste(
     database_name: str,
     email: str,
     coffee_name: str,
-    roastery_name: str,
+    roastery_id: int,
     points: int,
     notes: str,
 ) -> None:
     date_today = date.today()
-    roastery_id = find_roastery_id_from_names(database_name, coffee_name, roastery_name)
-    if roastery_id is None:
-        print("Database not modified")
-        return
 
     connection = sqlite3.connect(database_name)
     cursor = connection.cursor()

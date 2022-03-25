@@ -2,6 +2,7 @@ from pick import pick
 from tabulate import tabulate
 import sqlite3
 from add_coffee_taste import add_coffee_taste
+from add_coffee_taste import find_roastery_id_from_names
 from datetime import datetime
 from general_search import general_search
 
@@ -62,7 +63,6 @@ def add_coffee_taste_handler(database_name: str):
     # Asks the user to enter the name of the roastery and coffee
     # the number of points and any notes
     # Then adds those values to the database
-
     if user_email is None:
         print("You are not logged in, please log in first ")
         return
@@ -71,6 +71,11 @@ def add_coffee_taste_handler(database_name: str):
         "Enter the name of the roastery where your coffee was roasted: "
     )
 
+    roastery_id = find_roastery_id_from_names(database_name, coffee_name, roastery_name)
+    if roastery_id is None:
+        print("Database not modified")
+        return
+    print(type(roastery_id))
     print("Entering points ...")
     _, points = pick(
         [str(i) for i in range(11)],
@@ -84,7 +89,7 @@ def add_coffee_taste_handler(database_name: str):
         database_name=database_name,
         email=user_email,
         coffee_name=coffee_name,
-        roastery_name=roastery_name,
+        roastery_id=roastery_id,
         points=points,
         notes=notes,
     )
@@ -112,8 +117,14 @@ def print_users_with_coffee_tastes(database_name: str):
         """,
         (year,),
     )
-    
-    print(tabulate(cursor.fetchall(), headers=["User full name", "Different coffees drunk"], tablefmt='github'))
+
+    print(
+        tabulate(
+            cursor.fetchall(),
+            headers=["User full name", "Different coffees drunk"],
+            tablefmt="github",
+        )
+    )
 
     connection.close()
 
@@ -147,15 +158,25 @@ def show_coffee_value(database_name: str):
     no_rating_coffees = cursor.fetchall()
     connection.close()
 
-
     for i in range(len(no_rating_coffees)):
         no_rating_coffees[i] = list(no_rating_coffees[i])
         no_rating_coffees[i].append("No rating")
-    
+
     result.extend(no_rating_coffees)
 
-    print(tabulate(result, headers=["Roastery name", "Coffee name", "Price per kilo", "Average user rating"], tablefmt='github', colalign=("left","left","right","right")))
-
+    print(
+        tabulate(
+            result,
+            headers=[
+                "Roastery name",
+                "Coffee name",
+                "Price per kilo",
+                "Average user rating",
+            ],
+            tablefmt="github",
+            colalign=("left", "left", "right", "right"),
+        )
+    )
 
 
 # generic input sanitizer
@@ -196,7 +217,7 @@ def main():
 
     # with open('src/coffee.sql', 'r') as sql_file:
     #     sql_script = sql_file.read()
-    
+
     # connection = sqlite3.connect(database_name)
     # cursor = connection.cursor()
     # cursor.executescript(sql_script)
