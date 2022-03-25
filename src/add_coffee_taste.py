@@ -42,7 +42,6 @@ Please specify which roastery you mean, by country and region."""
         selected, _ = pick(
             roastery_options, title, options_map_func=lambda option: option.get("label")
         )
-        print(selected["roasteryID"])
         return selected["roasteryID"]
 
     connection.close()

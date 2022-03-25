@@ -9,7 +9,7 @@ from general_search import general_search
 user_email = None
 
 
-def log_in(database_name: str):
+def log_in(database_name: str) -> None:
     # Asks the user to enter the email and password,
     # checks that this matches an entry in the database,
     # and logs in by setting the user_email global variable
@@ -34,11 +34,12 @@ def log_in(database_name: str):
         # Keep the previous user logged in
         return
 
+    print("Logged in")
     # Set the email of the new user
     user_email = result[0][0]
 
 
-def log_out(database_name: str):
+def log_out(database_name: str) -> None:
     # Sets the global user_emal variable to None
     global user_email
     user_email = None
@@ -48,7 +49,9 @@ def log_out(database_name: str):
 def add_coffee_taste_handler(database_name: str) -> None:
     # Checks that the user is logged in
     # Asks the user to enter the name of the roastery and coffee
-    # the number of points and any notes
+    # Asks the user to specify the location of the roastery if the roastery
+    # is ambigous only knowing the roastery and coffee name
+    # Asks the user to enter the number of points and any notes
     # Then adds those values to the database
     if user_email is None:
         print("You are not logged in, please log in first ")
@@ -65,7 +68,6 @@ def add_coffee_taste_handler(database_name: str) -> None:
         print("Database not modified")
         return
 
-    print(type(roastery_id))
     print("Entering points ...")
     _, points = pick(
         [str(i) for i in range(11)],
@@ -180,7 +182,7 @@ def reset_database(database_name: str) -> None:
     connection.close()
 
 
-def main():
+def main() -> None:
     database_name = "src/coffee.db"
 
     # Uncomment the following line to reset the database by running the coffee.sql file
@@ -251,5 +253,6 @@ def main():
             return
 
 
+# If this python file is run (and not imported) run the main function
 if __name__ == "__main__":
     main()
