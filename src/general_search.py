@@ -32,7 +32,7 @@ def handle_processing_method(database_name: str):
     return (f'MethodName == "{selected_method}"', None)
 
 
-def handle_country_search(database_name: str):
+def handle_farm_country_search(database_name: str):
     connection = sqlite3.connect(database_name)
     cursor = connection.cursor()
 
@@ -55,7 +55,7 @@ def handle_country_search(database_name: str):
         return ("Farm.Country LIKE ?", search_term)
 
 
-def handle_region_search(database_name: str):
+def handle_farm_region_search(database_name: str):
     connection = sqlite3.connect(database_name)
     cursor = connection.cursor()
 
@@ -117,14 +117,14 @@ def general_search(database_name: str):
             "handler": handle_processing_method,
         },
         {
-            "label": "Country",
-            "confirmation_message": "Country category chosen",
-            "handler": handle_country_search,
+            "label": "Farm country",
+            "confirmation_message": "Farm country category chosen",
+            "handler": handle_farm_country_search,
         },
         {
-            "label": "Region",
-            "confirmation_message": "Region category chosen",
-            "handler": handle_region_search,
+            "label": "Farm region",
+            "confirmation_message": "Farm region category chosen",
+            "handler": handle_farm_region_search,
         },
     ]
     title_negate = "Negate last search term?"

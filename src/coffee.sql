@@ -188,13 +188,15 @@ VALUES (
     );
 INSERT INTO Country (Country)
 VALUES ("El Salvador"),
-    ("Italy"),
+    ("Rwanda"),
+    ("Columbia"),
     ("Costa Rica"),
     ("South Africa"),
     ("Norway");
 INSERT INTO Region (Region)
 VALUES ("Santa Ana"),
-    ("Bergamo"),
+    ("Kigali"),
+    ("Bogota"),
     ("Tarrazu"),
     ("Cape Town"),
     ("Trondheim"),
@@ -202,7 +204,7 @@ VALUES ("Santa Ana"),
 INSERT INTO Roastery (Name, Country, Region)
 VALUES ("Jacobsen & Svart", "Norway", "Trondheim"),
     ("Jacobsen & Svart", "Norway", "Oslo"),
-    ("Barbarian Brewing Company", "Italy", "Bergamo"),
+    ("Barbarian Brewing Company", "Rwanda", "Kigali"),
     ("The Whole Bean", "South Africa", "Cape Town"),
     ("Mocha Madness", "Costa Rica", "Tarrazu"),
     ("Steamed Beans", "Norway", "Trondheim");
@@ -214,10 +216,16 @@ VALUES (
         1500
     ),
     (
-        "Italy",
-        "Bergamo",
-        "Italian coffee farmers",
+        "Rwanda",
+        "Kigali",
+        "Official rwanda coffee farm",
         300
+    ),
+    (
+        "Columbia",
+        "Bogota",
+        "Columbian coffee exports",
+        700
     );
 INSERT INTO ProcessingMethod (MethodName, Description)
 VALUES ("Natural", "Do nothing basically"),
@@ -239,7 +247,8 @@ INSERT INTO CoffeeBatch (
     )
 VALUES (1, "Natural", 2021, 8),
     (1, "Washed", 2020, 11),
-    (2, "Wet-hulled", 2021, 7);
+    (2, "Wet-hulled", 2021, 7),
+    (3, "Washed", 2022, 9);
 INSERT INTO RoastedCoffee (
         CoffeeName,
         RoasteryID,
@@ -273,8 +282,17 @@ VALUES (
         2,
         2,
         "2022-02-23",
-        "Tastes of strawberry and apricot",
+        "A floral taste of strawberry and apricot",
         370
+    ),
+    (
+        "Plain Bourbon",
+        6,
+        4,
+        1,
+        "2022-02-23",
+        "A plain lightly roasted coffee",
+        500
     ),
     -- This coffee is not tasted at all, but should still be findable for user story 4 and 5
     (
@@ -307,7 +325,7 @@ VALUES (
         "Vinterkaffe 2022",
         1,
         9,
-        "Exelent!",
+        "This coffee is way more floral than the counterpart from Oslo!",
         "2022-03-14 12:00"
     ),
     -- The following taste is for a different coffee than the one above (different RoasteryID)
@@ -356,12 +374,14 @@ INSERT INTO Contains (BatchID, BeanID)
 VALUES (1, 1),
     (1, 2),
     (2, 2),
-    (3, 1);
+    (3, 1),
+    (4, 1);
 INSERT INTO Grows (FarmID, BeanID)
 VALUES (1, 1),
     (2, 1),
     (1, 2),
-    (1, 3);
+    (1, 3),
+    (3, 1);
 --@Block
 -- Display every value
 SELECT *
