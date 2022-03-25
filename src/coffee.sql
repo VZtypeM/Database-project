@@ -20,12 +20,18 @@ DROP TABLE IF EXISTS Country;
 -- Group members:
 -- Markus Risa Vesetrud
 -- Emma Eriksson Våge
+-- -----------------------------------------------------
+-- Table User 
+-- -----------------------------------------------------
 CREATE TABLE User (
     Email nvarchar(50),
     Password nvarchar(50),
     FullName nvarchar(50),
     PRIMARY KEY (Email)
 );
+-- -----------------------------------------------------
+-- Table CoffeeTastes
+-- -----------------------------------------------------
 CREATE TABLE CoffeeTastes (
     TasteID INTEGER PRIMARY KEY,
     Email nvarchar(50) NOT NULL,
@@ -42,10 +48,20 @@ CREATE TABLE CoffeeTastes (
     FOREIGN KEY (Email) REFERENCES User(Email) ON UPDATE CASCADE,
     FOREIGN KEY (CoffeeName, RoasteryID) REFERENCES RoastedCoffee(CoffeeName, RoasteryID) ON UPDATE CASCADE
 );
+-- -----------------------------------------------------
+-- Table Roastery
+-- -----------------------------------------------------
 CREATE TABLE Roastery (
     RoasteryID INTEGER PRIMARY KEY,
-    Name nvarchar(50)
+    Name nvarchar(50),
+    Country nvarchar(50),
+    Region nvarchar(50),
+    FOREIGN KEY (Country) REFERENCES Country(Country),
+    FOREIGN KEY (Region) REFERENCES Region(Region)
 );
+-- -----------------------------------------------------
+-- Table RoastedCoffee
+-- -----------------------------------------------------
 CREATE TABLE RoastedCoffee (
     CoffeeName nvarchar(50),
     RoasteryID int,
@@ -65,6 +81,9 @@ CREATE TABLE RoastedCoffee (
     FOREIGN KEY (RoasteryID) REFERENCES Roastery(RoasteryID) ON DELETE CASCADE,
     FOREIGN KEY (BatchID) REFERENCES CoffeeBatch(BatchID)
 );
+-- -----------------------------------------------------
+-- Table CoffeeBatch
+-- -----------------------------------------------------
 CREATE TABLE CoffeeBatch (
     BatchID INTEGER PRIMARY KEY,
     FarmID int NOT NULL,
@@ -74,11 +93,17 @@ CREATE TABLE CoffeeBatch (
     FOREIGN KEY (FarmID) REFERENCES Farm(FarmID),
     FOREIGN KEY (MethodName) REFERENCES ProcessingMethod(MethodName) ON UPDATE CASCADE
 );
+-- -----------------------------------------------------
+-- Table ProcessingMethod 
+-- -----------------------------------------------------
 CREATE TABLE ProcessingMethod (
     MethodName nvarchar(50),
     Description nvarchar(1000),
     PRIMARY KEY (MethodName)
 );
+-- -----------------------------------------------------
+-- Table CoffeeBean 
+-- -----------------------------------------------------
 CREATE TABLE CoffeeBean (
     BeanID INTEGER PRIMARY KEY,
     Name nvarchar(50),
@@ -92,6 +117,9 @@ CREATE TABLE CoffeeBean (
         AND Species <= 4
     )
 );
+-- -----------------------------------------------------
+-- Table Farm
+-- -----------------------------------------------------
 CREATE TABLE Farm (
     FarmID INTEGER PRIMARY KEY,
     Country nvarchar(50) NOT NULL,
@@ -101,8 +129,17 @@ CREATE TABLE Farm (
     FOREIGN KEY (Region) REFERENCES Region(Region),
     FOREIGN KEY (Country) REFERENCES Country(Country)
 );
+-- -----------------------------------------------------
+-- Table Country 
+-- -----------------------------------------------------
 CREATE TABLE Country (Country nvarchar(50) PRIMARY KEY);
+-- -----------------------------------------------------
+-- Table Region 
+-- -----------------------------------------------------
 CREATE TABLE Region (Region nvarchar(50) PRIMARY KEY);
+-- -----------------------------------------------------
+-- Table Contains
+-- -----------------------------------------------------
 CREATE TABLE Contains (
     BatchID int,
     BeanID int,
@@ -110,6 +147,9 @@ CREATE TABLE Contains (
     FOREIGN KEY (BatchID) REFERENCES CoffeeBatch(BatchID),
     FOREIGN KEY (BeanID) REFERENCES CoffeeBean(BeanID)
 );
+-- -----------------------------------------------------
+-- Table Grows
+-- -----------------------------------------------------
 CREATE TABLE Grows (
     FarmID int,
     BeanID int,
@@ -117,40 +157,89 @@ CREATE TABLE Grows (
     FOREIGN KEY (FarmID) REFERENCES Farm(FarmID),
     FOREIGN KEY (BeanID) REFERENCES CoffeeBean(BeanID)
 );
---off@Block
--- Insert at least one row in every table
+-- -----------------------------------------------------
+-- Inserting values
+-- -----------------------------------------------------
 INSERT INTO User (Email, Password, FullName)
 VALUES (
         "ola.nordman@gmail.com",
         "Password123",
         "Ola Nordman"
+    ),
+    (
+        "karl.karlsen@hotmail.com",
+        "paris2022",
+        "Karl Karlsen"
+    ),
+    (
+        "maria.olsen@gmail.com",
+        "qwerty42",
+        "Maria Olsen"
+    ),
+    (
+        "rektor@ntnu.no",
+        "ntnuerbest",
+        "Anne Borg"
+    ),
+    (
+        "oskar@eriksen.no",
+        "Pkf94RIFfz!",
+        "Oskar Eriksen"
     );
-INSERT INTO Roastery (Name)
-VALUES ("Trondheim brewery Jacobsen & Svart");
 INSERT INTO Country (Country)
-VALUES ("El Salvador");
+VALUES ("El Salvador"),
+    ("Italy"),
+    ("Costa Rica"),
+    ("South Africa"),
+    ("Norway");
 INSERT INTO Region (Region)
-VALUES ("Santa Ana");
+VALUES ("Santa Ana"),
+    ("Bergamo"),
+    ("Tarrazu"),
+    ("Cape Town"),
+    ("Trondheim"),
+    ("Oslo");
+INSERT INTO Roastery (Name, Country, Region)
+VALUES ("Jacobsen & Svart", "Norway", "Trondheim"),
+    ("Jacobsen & Svart", "Norway", "Oslo"),
+    ("Barbarian Brewing Company", "Italy", "Bergamo"),
+    ("The Whole Bean", "South Africa", "Cape Town"),
+    ("Mocha Madness", "Costa Rica", "Tarrazu"),
+    ("Steamed Beans", "Norway", "Trondheim");
 INSERT INTO Farm (Country, Region, Name, MetersAboveSea)
 VALUES (
         "El Salvador",
         "Santa Ana",
         "Nombre de Dios",
         1500
+    ),
+    (
+        "Italy",
+        "Bergamo",
+        "Italian coffee farmers",
+        300
     );
 INSERT INTO ProcessingMethod (MethodName, Description)
-VALUES ("Natrual", "Do nothing basically");
-INSERT INTO ProcessingMethod (MethodName, Description)
-VALUES ("Washed", "Wash all the beans");
+VALUES ("Natural", "Do nothing basically"),
+    ("Washed", "Wash all the beans"),
+    (
+        "Wet-hulled",
+        "Hull and husk is removed at a greater moisture level"
+    );
 INSERT INTO CoffeeBean (Name, Species)
-VALUES ("Bourbon", 1);
+VALUES ("Bourbon", 1),
+    ("Mocha", 1),
+    ("Fancy Coffee cultivar", 3),
+    ("Java", 2);
 INSERT INTO CoffeeBatch (
         FarmID,
         MethodName,
         HarvestYear,
         PricePaidToFarm
     )
-VALUES (1, "Natrual", 2021, 8);
+VALUES (1, "Natural", 2021, 8),
+    (1, "Washed", 2020, 11),
+    (2, "Wet-hulled", 2021, 7);
 INSERT INTO RoastedCoffee (
         CoffeeName,
         RoasteryID,
@@ -164,10 +253,38 @@ VALUES (
         "Vinterkaffe 2022",
         1,
         1,
-        1,
+        2,
         "2022-01-22",
         "A tasty and complex coffee for polar nights",
         600
+    ),
+    (
+        "Vinterkaffe 2022",
+        2,
+        1,
+        3,
+        "2021-10-13",
+        "A dark and spicy coffee roast",
+        700
+    ),
+    (
+        "Plan del Hoyo",
+        3,
+        2,
+        2,
+        "2022-02-23",
+        "Tastes of strawberry and apricot",
+        750
+    ),
+    -- This coffee is not tasted at all, but should still be findable for user story 4 and 5
+    (
+        "Ratnagiri Honey",
+        4,
+        3,
+        1,
+        "2022-01-05",
+        "Tastes of aromatic apples and brown sugar",
+        890
     );
 INSERT INTO CoffeeTastes (
         Email,
@@ -184,11 +301,67 @@ VALUES (
         10,
         "Wow an odyssey for the taste buds: citrus peel, milk chocolate, apricot!",
         "2022-03-14 12:00"
+    ),
+    (
+        "ola.nordman@gmail.com",
+        "Vinterkaffe 2022",
+        1,
+        9,
+        "Exelent!",
+        "2022-03-14 12:00"
+    ),
+    -- The following taste is for a different coffee than the one above (different RoasteryID)
+    (
+        "ola.nordman@gmail.com",
+        "Vinterkaffe 2022",
+        2,
+        7,
+        "The darker roast does note quite suit me",
+        "2022-03-14 12:00"
+    ),
+    (
+        "ola.nordman@gmail.com",
+        "Plan del Hoyo",
+        3,
+        8,
+        "You can really feel the strawberry!",
+        "2022-03-14 12:00"
+    ),
+    (
+        "maria.olsen@gmail.com",
+        "Plan del Hoyo",
+        3,
+        7,
+        "",
+        "2022-03-14 12:00"
+    ),
+    -- Note how the following taste is registered in 2019 and therefore should not be taken into account by user story 2
+    (
+        "maria.olsen@gmail.com",
+        "Vinterkaffe 2022",
+        1,
+        5,
+        "Mediocre, just mediocre",
+        "2019-03-14 12:00"
+    ),
+    (
+        "oskar@eriksen.no",
+        "Plan del Hoyo",
+        3,
+        4,
+        "As expected",
+        "2022-03-14 12:00"
     );
 INSERT INTO Contains (BatchID, BeanID)
-VALUES (1, 1);
+VALUES (1, 1),
+    (1, 2),
+    (2, 2),
+    (3, 1);
 INSERT INTO Grows (FarmID, BeanID)
-VALUES (1, 1);
+VALUES (1, 1),
+    (2, 1),
+    (1, 2),
+    (1, 3);
 --@Block
 -- Display every value
 SELECT *
