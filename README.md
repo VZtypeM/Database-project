@@ -1,6 +1,6 @@
 # Database project
 
-This repo contains my delivery to the project in the NTNU course `TDT4145 Datamodellering og databasesystemer`. The repo was made public the day the project was submitted.
+This repo contains my delivery to the project in the NTNU course `TDT4145 Datamodellering og databasesystemer`. The repo was made public the day the project was submitted. All files relevant to the submission is in the `src/` directory.
 
 ## Running the code
 
