@@ -214,7 +214,7 @@ def main():
             "confirmation_message": "Printing coffee values sorted on average_rating/price\n",
             "handler": show_coffee_value,
         },
-        # These commente out options correspond to the spesific queries to solve user story 4 and 5
+        # These commented out options correspond to the spesific queries to solve user story 4 and 5
         # User story 4 and 5 are now solved by the general_search
         # Our previous way of doing it can be found in "not_used.py"
         # {
