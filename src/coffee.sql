@@ -274,7 +274,7 @@ VALUES (
         2,
         "2022-02-23",
         "Tastes of strawberry and apricot",
-        750
+        370
     ),
     -- This coffee is not tasted at all, but should still be findable for user story 4 and 5
     (
@@ -284,7 +284,7 @@ VALUES (
         1,
         "2022-01-05",
         "Tastes of aromatic apples and brown sugar",
-        890
+        500
     );
 INSERT INTO CoffeeTastes (
         Email,

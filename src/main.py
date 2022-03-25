@@ -134,10 +134,28 @@ def show_coffee_value(database_name: str):
         ORDER BY AVG(Points)/PricePerKilo DESC;
         """
     )
+    result = cursor.fetchall()
 
-    print(tabulate(cursor.fetchall(), headers=["Roastery name", "Coffee name", "Price per kilo", "Average user rating"], tablefmt='github'))
-
+    cursor.execute(
+        # This query only gets the coffees without a rating, which are listet at the bottom
+        """
+        SELECT Roastery.name as RoasteryName, CoffeeName, PricePerKilo
+        FROM Roastery JOIN RoastedCoffee USING (RoasteryID) LEFT OUTER JOIN CoffeeTastes USING (RoasteryID, CoffeeName)
+        WHERE email IS NULL;
+        """
+    )
+    no_rating_coffees = cursor.fetchall()
     connection.close()
+
+
+    for i in range(len(no_rating_coffees)):
+        no_rating_coffees[i] = list(no_rating_coffees[i])
+        no_rating_coffees[i].append("No rating")
+    
+    result.extend(no_rating_coffees)
+
+    print(tabulate(result, headers=["Roastery name", "Coffee name", "Price per kilo", "Average user rating"], tablefmt='github', colalign=("left","left","right","right")))
+
 
 
 # generic input sanitizer
